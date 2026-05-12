@@ -10,7 +10,7 @@ test.describe("Saucedemo", () => {
     await page.getByRole("button", { name: "Login" }).click();
   });
 
-  test("Login - Happy path", async ({ page }) => {
+  test("Login -- Happy path", async ({ page }) => {
     await expect(page).toHaveURL("/inventory.html");
   });
 
