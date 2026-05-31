@@ -6,6 +6,16 @@ import users from '../data/users.json';
 
 test.describe('Final Project - Automation Exercise Website', () => {
   test.beforeEach(async ({ page }) => {
+    await page.route('**/*', (route) => {
+    const url = route.request().url();
+    
+    // Si la URL contiene algo relacionado con Google Ads, la cancelamos
+    if (url.includes('googleads') || url.includes('doubleclick') || url.includes('adservice')) {
+      route.abort(); // Bloquea la petición
+    } else {
+      route.continue(); // Deja pasar el resto de la página normal
+    }
+  });
     await page.goto('/');
   });
 
