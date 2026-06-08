@@ -12,6 +12,9 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  timeout: 60000,
+  expect: { timeout: 10000 },
+
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -25,11 +28,19 @@ export default defineConfig({
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    actionTimeout: 25000,
+    navigationTimeout: 50000,
     /* Base URL to use in actions like `await page.goto('')`. */
     // baseURL: 'http://localhost:3000',
     baseURL: 'https://automationexercise.com/',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    launchOptions: {
+      args: [
+        '--disable-blink-features=AutomationControlled', // Oculta que es controlado por automatización
+      ],
+    },
   },
 
   /* Configure projects for major browsers */

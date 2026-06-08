@@ -1,6 +1,24 @@
 [
     {
-        "name": "Elias",
-        "email": "elias@example.com"
+        "name": "test",
+        "lastName": "Milcoff",
+        "email": "eliastest@yopmail.com",
+        "message": "Hello, this is a test message for the contact form.",
+        "password": "123456",
+        "dayOfBirth": "15",
+        "monthOfBirth": "5",
+        "yearOfBirth": "1990",
+        "address": "123 Main St",
+        "country": "United States",
+        "state": "CA",
+        "city": "Los Angeles",
+        "zipCode": "90001",
+        "mobileNumber": "123-456-7890",
+        "nameOnCard": "Test User",
+        "cardNumber": "4111111111111111",
+        "cvc": "123",
+        "expiryMonth": "12",
+        "expiryYear": "2025"
     }
+
 ]

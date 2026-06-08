@@ -1,12 +1,10 @@
 [
   {
     "name": "Blue Top",
-    "price": 500,
-    "quantity": 1
+    "price": 500
   },
   {
     "name": "Men Tshirt",
-    "price": 400,
-    "quantity": 1
+    "price": 400
   }
 ]
