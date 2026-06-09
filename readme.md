@@ -10,34 +10,38 @@ This repository contains an end-to-end test suite written with Playwright and Ty
 - `playwright-report/` — Generated HTML report output (created after running tests)
 
 ## Test cases
-- CART PAGE:
+
+`- CART PAGE:`
 * User can add multiple products to cart and verify price/quantity/total
 * User can remove product from cart
 
-- CHECKOUT:
+`- CHECKOUT:`
 * User can place and order with 1 item
 
-- LOGIN:
+`- LOGIN:`
 * User can login and logout successfully
 
-- REGISTER:
+`- REGISTER:`
 * User can register and login successfully
 * User cannot register with existing email
 * User cannot register with invalid email
 * User cannot create an account with empty account/address information
 * User is able to delete account
 
-- SUSCRIBE:
+`- SUSCRIBE:`
 * User can suscribe to newsletter in homepage and verify success message
 * User cannot suscribe to newsletter with invalid email
 
-- PRODUCT LIST PAGE:
+`- PRODUCT LIST PAGE:`
 * User can search for a product and see relevant results
+* Promo big banner is visible
 
-- PRODUCT DETAIL PAGE:
+`- PRODUCT DETAIL PAGE:`
 * User is able to write a review
 * User can open product details and verify name, price, availability
 * User is not able to submit a review with empty name and email
+
+-`Test cases with title EXTRA are test cases not required by the course`-
 
 
 ## How to run
@@ -56,4 +60,3 @@ Key implementation notes
 
 - File upload test: uses `data/testFile.txt`. Ensure the file path is correct when running from a different working directory.
 
--
