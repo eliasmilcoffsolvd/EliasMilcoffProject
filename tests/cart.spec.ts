@@ -45,52 +45,76 @@ test.describe('Cart Page - Test cases', () => {
     });
   });
 
-  test('TC - 01 User can add multiple products to cart and verify price/quantity/total', async ({ page }) => {
+//   test('TC - 01 User can add multiple products to cart and verify price/quantity/total', async ({ page }) => {
 
-  await globalPage.navigateToProducts();
-  await productsPage.searchForProduct(expectedProducts[0].name);
-  await page.getByRole('link', { name: 'View Product' }).click()
-  await page.locator('#quantity').fill('3')
-  await page.getByRole('button', { name: 'Add to cart' }).click()
-  await page.getByRole('button', { name: 'Continue Shopping' }).click()
-  await globalPage.navigateToProducts();
-  await productsPage.searchForProduct(expectedProducts[1].name);
-  await productsPage.addProductToCartByName(expectedProducts[1].name);
-  await productsPage.navigateToCart();
-  const productRows = page.locator('#cart_info_table tbody tr[id^="product-"]');
-  await expect(productRows).toHaveCount(expectedProducts.length);  
-// 4. Dynamic loop to audit calculations for each row
-  for (const expectedProduct of expectedProducts) {
-    const matchingRow = productRows.filter({ hasText: expectedProduct.name });
-    await expect(matchingRow).toBeVisible();
-    await expect(matchingRow.getByRole('link', { name: expectedProduct.name })).toBeVisible();
+test('TC - 01 User can add multiple products to cart and verify price/quantity/total', async ({ page }) => {
 
-    // Extract text values from the current row in the Cart Page
-    const priceText = await matchingRow.locator('.cart_price p').innerText();
-    const quantityText = await matchingRow.locator('.cart_quantity button').innerText();
-    const totalText = await matchingRow.locator('.cart_total_price').innerText();
-
-    // Convert extracted text values to integers (stripping out "Rs.", symbols, and spaces)
-    const actualPrice = parseInt(priceText.replace(/\D/g, ''), 10);
-    const actualQuantity = parseInt(quantityText.replace(/\D/g, ''), 10);
-    const actualTotal = parseInt(totalText.replace(/\D/g, ''), 10);
+  // Search and add the first product with a specific quantity from data
+    await test.step('Add first product to cart with custom quantity', async () => {
+    await globalPage.navigateToProducts();
+    await productsPage.searchForProduct(expectedProducts[0].name);
     
-    // A. Validate that the unit price on the screen matches the JSON data
-    expect(actualPrice).toBe(expectedProduct.price);
+    // Go to product details page (PDP), set custom quantity, and add to cart
+    await page.getByRole('link', { name: 'View Product' }).click();
+    await page.locator('#quantity').fill(expectedProducts[0].qty.toString());
+    await page.getByRole('button', { name: 'Add to cart' }).click();
+    await page.getByRole('button', { name: 'Continue Shopping' }).click();
+  });
 
-    // B. Validate specific quantities set during the purchase flow
-    if (expectedProduct.name === expectedProducts[0].name) {
-      expect(actualQuantity).toBe(3); // First product must display a quantity of 3
-    } else {
-      expect(actualQuantity).toBe(1); // Second product must display a quantity of 1
+    // Search and add the second product with its respective quantity
+    await test.step('Add second product to cart', async () => {
+    await globalPage.navigateToProducts();
+    await productsPage.searchForProduct(expectedProducts[1].name);
+    
+    // Add directly to the cart from the products listing view
+    await productsPage.addProductToCartByName(expectedProducts[1].name);
+  });
+
+    // Navigate to the cart page and verify the row count matches expected items
+    await test.step('Navigate to Cart and verify initial row count', async () => {
+    await productsPage.navigateToCart();
+    
+    // Locate the product rows in the cart table and assert the count matches the data array length
+    const productRows = page.locator('#cart_info_table tbody tr[id^="product-"]');
+    await expect(productRows).toHaveCount(expectedProducts.length);  
+  });
+
+    // Dynamically audit calculations (price, quantity, total) for each row 
+    await test.step('Audit cart calculations for each product', async () => {
+      const productRows = page.locator('#cart_info_table tbody tr[id^="product-"]');
+    
+      for (const expectedProduct of expectedProducts) {
+      // Find the specific row containing the expected product name
+      const matchingRow = productRows.filter({ hasText: expectedProduct.name });
+      
+      // Verify the product row is visible and contains the correct link text
+      await expect(matchingRow).toBeVisible();
+      await expect(matchingRow.getByRole('link', { name: expectedProduct.name })).toBeVisible();
+
+      // Extract raw text values from the current table row
+      const priceText = await matchingRow.locator('.cart_price p').innerText();
+      const quantityText = await matchingRow.locator('.cart_quantity button').innerText();
+      const totalText = await matchingRow.locator('.cart_total_price').innerText();
+
+      // Convert extracted text values to numbers by stripping out currency symbols, commas, or spaces
+      const actualPrice = parseInt(priceText.replace(/\D/g, ''), 10);
+      const actualQuantity = parseInt(quantityText.replace(/\D/g, ''), 10);
+      const actualTotal = parseInt(totalText.replace(/\D/g, ''), 10);
+      
+      // Validate that the unit price displayed on screen matches the dataset
+      expect(actualPrice).toBe(expectedProduct.price);
+
+      // Validate that the actual quantity matches the 'qty' property defined in the dataset
+      expect(actualQuantity).toBe(expectedProduct.qty);
+
+      // Calculate the expected line-item total and assert it matches the actual total on screen
+      const expectedCalculatedTotal = actualPrice * actualQuantity;
+      expect(actualTotal).toBe(expectedCalculatedTotal);
     }
+  });
 
-    // C. Calculate the expected total by multiplying the actual price by the quantity taken from the table column
-    const expectedCalculatedTotal = actualPrice * actualQuantity;
-    expect(actualTotal).toBe(expectedCalculatedTotal);
 
-  }
-  })
+});
 
   test('TC - 02 User can remove product from cart', async ({ page }) => {
     await globalPage.navigateToProducts();
